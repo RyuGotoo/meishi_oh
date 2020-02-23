@@ -5,7 +5,7 @@ from janome.tokenizer import Tokenizer
 
 
 the_part_of_speech_for_deciding_the_king = '名詞'
-# 名詞, 動詞, 助詞, 記号, 副詞, 助動詞, 形容詞, 接続詞, 連体詞, 接頭詞, 感動詞
+# 名詞, 動詞, 助詞, 副詞, 助動詞, 形容詞, 接続詞, 連体詞, 接頭詞, 感動詞
 
 
 class Blog(object):
@@ -51,7 +51,9 @@ def create_blogs(urls):
         # 形態素解析
         pos_list = []
         for token in Tokenizer().tokenize(text):
-            pos_list.append(token.part_of_speech.split(',')[0])
+            pos = token.part_of_speech.split(',')[0]
+            if pos != '記号':
+                pos_list.append(pos)
         blog.pos_num = len(pos_list)
 
         # 品詞 (pos) カウント
@@ -67,6 +69,7 @@ def show_fields(blog):
     print(blog.url)
     print(blog.title)
     print('総単語数 :', blog.pos_num)
+    blog.pos_counts = dict(sorted(blog.pos_counts.items(), key=lambda x: -x[1]))
     print(dict(blog.pos_counts))
     pos_rates = blog.get_pos_rates()
     for pos, rate in pos_rates.items():
